@@ -73,3 +73,35 @@ Valores inválidos en el Seed de MongoDB (POST):
 URL: POST http://localhost:8080/api/mocks/seed?qty=0
 
 Resultado: Status 400 Bad Request.
+
+
+📌 Pre-entrega 4: Logging y Monitoreo Básico
+Se integró un sistema de logging profesional basado en Winston con soporte para rotación diaria de archivos vía winston-daily-rotate-file.
+
+Niveles de Log Configurados
+fatal: Fallas críticas que comprometen el funcionamiento de la app (ej. error al conectar MongoDB).
+
+error: Excepciones o errores no controlados del servidor (5xx).
+
+warning: Advertencias y errores esperados del cliente/negocio (4xx).
+
+info: Eventos operacionales (inicio de servidor, conexión a BD).
+
+http: Peticiones HTTP registradas mediante middleware.
+
+debug: Información detallada de tracing para entornos de desarrollo.
+
+Comportamiento según el Entorno (NODE_ENV)
+Desarrollo (development): Muestra por consola desde el nivel debug en adelante, incluyendo timestamps y colores.
+
+Producción (production): Limita la consola a partir del nivel info.
+
+Persistencia y Rotación de Logs
+Los logs con nivel error y fatal se guardan automáticamente en la carpeta /logs en archivos rotativos diarios con el nombre error-YYYY-MM-DD.log (máximo 14 días de retención).
+
+Nota: La carpeta /logs y los archivos *.log están incluidos en .gitignore para evitar su persistencia en el repositorio.
+
+Endpoint Interno de Prueba
+URL: GET http://localhost:8080/loggerTest
+
+Descripción: Dispara logs en todos los niveles para verificar la consola y la escritura en archivo.
