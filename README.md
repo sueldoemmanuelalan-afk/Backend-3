@@ -105,3 +105,23 @@ Endpoint Interno de Prueba
 URL: GET http://localhost:8080/loggerTest
 
 Descripción: Dispara logs en todos los niveles para verificar la consola y la escritura en archivo.
+
+## 📌 Pre-entrega 5: Documentación de API con Swagger
+
+Se implementó la documentación técnica interactiva de la API utilizando **Swagger UI** y especificaciones **OpenAPI 3.0.1**.
+
+### Acceso a la Documentación
+* **Ruta de Swagger UI:** `http://localhost:8080/api/docs`
+
+### Módulos Documentados y Estructura por Tags
+* **Users:** Endpoints de consulta y gestión de usuarios.
+* **Orders:** Gestión y listado de pedidos.
+* **Stores:** Información sobre sucursales y tiendas.
+* **Mocks:** Generación de usuarios de prueba en memoria (`GET /api/mocks/users`) y sembrado masivo a la BD (`POST /api/mocks/seed`). Incluye documentación detallada de respuestas de error ante cantidades o parámetros no válidos.
+* **Logger:** Endpoint de testing interno (`GET /loggerTest`) para la validación de niveles de logs.
+
+### Schemas Reutilizables Definidos
+La documentación incluye esquemas reutilizables en Swagger UI para:
+* `User`, `Order`, `OrderItem`, `Delivery`
+* `SuccessResponse` (Estructura estándar de éxito)
+* `ErrorResponse` (Estructura estándar de errores)

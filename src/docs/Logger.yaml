@@ -1,0 +1,21 @@
+paths:
+  /loggerTest:
+    get:
+      summary: Probar niveles de registro en el Logger (Herramienta Interna)
+      description: Endpoint de validación técnica que dispara logs en todos los niveles configurados (fatal, error, warning, info, http, debug). No representa lógica de negocio.
+      tags:
+        - Logger
+      responses:
+        '200':
+          description: Logs registrados correctamente en la consola y archivos de salida.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logs generados exitosamente. Revisa la consola y la carpeta /logs.

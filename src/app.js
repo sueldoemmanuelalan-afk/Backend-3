@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { specs } from "./config/swagger.js";
 import productsRouter from './routes/products.router.js';
 import usersRouter from "./routes/users.router.js";
 import storesRouter from "./routes/stores.router.js";
@@ -37,6 +39,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/stores", storesRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/mocks", mocksRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use((req, res, next) => {
   CustomError.createError({
@@ -48,7 +51,6 @@ app.use((req, res, next) => {
   });
 });
 
-// Middleware global de errores (SIEMPRE AL FINAL)
 app.use(errorHandler);
 
 export default app;

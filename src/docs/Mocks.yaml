@@ -1,0 +1,81 @@
+paths:
+  /api/mocks/users:
+    get:
+      summary: Generar usuarios simulados en memoria
+      description: Devuelve una lista de usuarios falsos generados dinámicamente con Faker.js sin persistir en la base de datos.
+      tags:
+        - Mocks
+      parameters:
+        - in: query
+          name: qty
+          schema:
+            type: integer
+            default: 5
+          description: Cantidad de usuarios a generar. Debe ser un número mayor a 0.
+      responses:
+        '200':
+          description: Lista de usuarios simulados generada con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '400':
+          description: Cantidad no válida o negativa enviada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/mocks/seed:
+    post:
+      summary: Poblar la base de datos MongoDB con datos de prueba
+      description: Genera e inserta masivamente usuarios, pedidos y entregas vinculadas dinámicamente en la BD.
+      tags:
+        - Mocks
+      parameters:
+        - in: query
+          name: qty
+          schema:
+            type: integer
+            default: 5
+          description: Cantidad de datos de prueba a generar por entidad.
+      responses:
+        '201':
+          description: Base de datos poblada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Base de datos poblada con éxito
+                  payload:
+                    type: object
+                    properties:
+                      usersInserted:
+                        type: integer
+                        example: 7
+                      ordersInserted:
+                        type: integer
+                        example: 5
+                      deliveriesInserted:
+                        type: integer
+                        example: 5
+        '400':
+          description: Cantidad o parámetros de entrada inválidos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
