@@ -54,6 +54,7 @@ Todos los errores de la API devuelven una estructura HTTP uniforme:
   "code": 4,
   "cause": "Se recibió qty='-3'. Debe ser un número entero mayor a 0."
 }
+```
 
 Casos de prueba para verificar errores controlados
 Cantidad negativa en usuarios simulados (GET):
@@ -75,7 +76,8 @@ URL: POST http://localhost:8080/api/mocks/seed?qty=0
 Resultado: Status 400 Bad Request.
 
 
-📌 Pre-entrega 4: Logging y Monitoreo Básico
+## 📌 Pre-entrega 4: Logging y Monitoreo Básico
+
 Se integró un sistema de logging profesional basado en Winston con soporte para rotación diaria de archivos vía winston-daily-rotate-file.
 
 Niveles de Log Configurados
@@ -140,6 +142,7 @@ Las pruebas se ejecutan de manera aislada utilizando una base de datos MongoDB d
 ```env
 MONGO_URI=mongodb://localhost:27017/shipnow_test
 NODE_ENV=test
+```
 
 ## 📁 Pre-entrega 7: Carga de Archivos, Documentos y Comprobantes
 
