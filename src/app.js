@@ -5,6 +5,7 @@ import usersRouter from "./routes/users.router.js";
 import storesRouter from "./routes/stores.router.js";
 import ordersRouter from "./routes/orders.router.js";
 import mocksRouter from './routes/mocks.router.js';
+import { errorHandler } from './errors/error.middleware.js';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/stores", storesRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/mocks", mocksRouter);
+app.use(errorHandler);
 
 app.use((req, res) => {
   res.status(404).json({

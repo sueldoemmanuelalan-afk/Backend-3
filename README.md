@@ -39,5 +39,37 @@ Desacoplamiento y Mantenibilidad: La lógica de negocio (Service) queda completa
 
 Testabilidad: Facilita la creación de pruebas unitarias sobre los servicios mediante el uso de mocks o datos simulados sin requerir una conexión activa a la base de datos.
 
+## 📌 Pre-entrega 3: Manejo Profesional de Errores
 
+Se implementó un sistema centralizado de gestión de errores mediante una arquitectura por capas.
 
+### Structure of Error Responses
+Todos los errores de la API devuelven una estructura HTTP uniforme:
+
+```json
+{
+  "status": "error",
+  "error": "InvalidQuantityError",
+  "message": "La cantidad (qty) debe ser un número entero positivo superior a 0.",
+  "code": 4,
+  "cause": "Se recibió qty='-3'. Debe ser un número entero mayor a 0."
+}
+
+Casos de prueba para verificar errores controlados
+Cantidad negativa en usuarios simulados (GET):
+
+URL: GET http://localhost:8080/api/mocks/users?qty=-3
+
+Resultado: Status 400 Bad Request con mensaje de error sobre cantidad inválida.
+
+Parámetro no numérico en generación de mocks (GET):
+
+URL: GET http://localhost:8080/api/mocks/users?qty=abc
+
+Resultado: Status 400 Bad Request.
+
+Valores inválidos en el Seed de MongoDB (POST):
+
+URL: POST http://localhost:8080/api/mocks/seed?qty=0
+
+Resultado: Status 400 Bad Request.

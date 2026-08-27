@@ -1,19 +1,19 @@
 import { MocksService } from '../services/mocks.service.js';
 
 export class MocksController {
-  static getUsers(req, res) {
+  static getUsers(req, res, next) {
     try {
       const qty = req.query.qty || 5;
       const users = MocksService.getUsers(qty);
       res.status(200).json({ status: 'success', payload: users });
     } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  static async seedData(req, res) {
+  static async seedData(req, res, next) {
     try {
-      const qty = Number(req.query.qty) || 5;
+      const qty = req.query.qty || 5;
       const result = await MocksService.seedData(qty, qty);
       res.status(201).json({
         status: 'success',
@@ -21,7 +21,7 @@ export class MocksController {
         payload: result
       });
     } catch (error) {
-      res.status(500).json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 }
