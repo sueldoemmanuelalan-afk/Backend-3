@@ -1,8 +1,7 @@
 node_modules
 .env
-logs
-uploads
+logs/
+uploads/
 coverage
 npm-debug.log
-logs/
 *.log

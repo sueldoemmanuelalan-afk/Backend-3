@@ -5,6 +5,9 @@ import { EErrors } from "../errors/enum.js";
 
 const userService = new UserService();
 
+// Tipos de documento permitidos para la entidad usuario
+const ALLOWED_DOC_TYPES = ["DNI", "LICENSE", "PASSPORT", "TAX_ID", "PROOF_OF_ADDRESS"];
+
 export class UserController {
   static async getAll(req, res) {
     try {
@@ -70,7 +73,17 @@ export class UserController {
         throw CustomError.createError({
           name: "MissingDocTypeError",
           cause: "Campo docType no especificado.",
-          message: "Debe especificar el tipo de documento (ej. DNI, LICENSE).",
+          message: "Debe especificar el tipo de documento (ej. DNI, LICENSE, PASSPORT, TAX_ID, PROOF_OF_ADDRESS).",
+          code: EErrors.INVALID_TYPES,
+          statusCode: 400
+        });
+      }
+
+      if (!ALLOWED_DOC_TYPES.includes(docType)) {
+        throw CustomError.createError({
+          name: "InvalidDocTypeError",
+          cause: `El tipo de documento '${docType}' no es válido.`,
+          message: `Tipo de documento no permitido. Tipos válidos: ${ALLOWED_DOC_TYPES.join(", ")}`,
           code: EErrors.INVALID_TYPES,
           statusCode: 400
         });
@@ -95,6 +108,7 @@ export class UserController {
 
       const documentMeta = {
         name: req.file.originalname,
+        filename: req.file.filename,
         reference: req.file.path,
         docType,
         mimeType: req.file.mimetype,

@@ -1,0 +1,40 @@
+paths:
+  /api/users/{uid}/documents:
+    post:
+      summary: Subir documento de usuario
+      description: Carga un archivo (DNI, LICENSE, PASSPORT, TAX_ID, PROOF_OF_ADDRESS) y lo asocia al usuario correspondiente.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID único del usuario en MongoDB
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - document
+                - docType
+              properties:
+                docType:
+                  type: string
+                  enum: [DNI, LICENSE, PASSPORT, TAX_ID, PROOF_OF_ADDRESS]
+                  example: DNI
+                  description: Tipo de documento adjunto.
+                document:
+                  type: string
+                  format: binary
+                  description: Archivo físico (formatos permitidos JPG, PNG, WEBP, PDF - máx 5MB).
+      responses:
+        "200":
+          description: Documento subido y asociado correctamente al usuario.
+        "400":
+          description: Archivo faltante, tipo de archivo o tipo de documento inválido.
+        "404":
+          description: Usuario no encontrado.

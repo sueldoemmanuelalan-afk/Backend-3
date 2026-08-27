@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     if (file.fieldname === 'proof') {
       folder = 'uploads/proofs';
     }
-    
+
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
     }
@@ -25,16 +25,20 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
-  
+
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new CustomError({
-      name: 'InvalidFileTypeError',
-      message: 'Tipo de archivo no permitido. Solo se aceptan JPG, PNG, WEBP y PDF.',
-      code: EErrors.INVALID_TYPES,
-      statusCode: 400
-    }), false);
+    cb(
+      CustomError.createError({
+        name: 'InvalidFileTypeError',
+        cause: `El formato de archivo ${file.mimetype} no está permitido.`,
+        message: 'Tipo de archivo no permitido. Solo se aceptan JPG, PNG, WEBP y PDF.',
+        code: EErrors.INVALID_TYPES,
+        statusCode: 400
+      }),
+      false
+    );
   }
 };
 
