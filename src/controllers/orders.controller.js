@@ -9,8 +9,19 @@ const orderService = new OrderService();
 export class OrderController {
   static async getAll(req, res) {
     try {
-      const orders = await orderService.getAllOrders();
-      res.json({ status: "success", payload: orders });
+      // Extraemos page y limit de req.query (con valores por defecto 1 y 10)
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+
+      // Pasamos los parámetros de paginación al servicio
+      const orders = await orderService.getAllOrders({ page, limit });
+      
+      res.json({ 
+        status: "success", 
+        page,
+        limit,
+        payload: orders 
+      });
     } catch (error) {
       res.status(500).json({ status: "error", message: error.message });
     }

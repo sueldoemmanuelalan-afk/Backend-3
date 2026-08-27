@@ -11,10 +11,14 @@ const storage = multer.diskStorage({
       folder = 'uploads/proofs';
     }
 
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder, { recursive: true });
+    try {
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+      cb(null, folder);
+    } catch (error) {
+      cb(error, folder);
     }
-    cb(null, folder);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
@@ -45,5 +49,7 @@ const fileFilter = (req, file, cb) => {
 export const uploader = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max
+  limits: { 
+    fileSize: 5 * 1024 * 1024 // Límite de 5 MB
+  }
 });

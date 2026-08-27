@@ -1,157 +1,71 @@
-# ShipNow API - Pre-entrega Módulo 1
+# ShipNow Backend API 🚚
 
-API REST para la gestión de envíos, productos y usuarios refactorizada a una arquitectura profesional en 3 capas.
+API RESTful para la gestión de entregas y logística de ShipNow, desarrollada con Node.js, Express y MongoDB.
 
-## 🚀 Instrucciones para correr el proyecto localmente
+---
 
-1. Clonar el repositorio:
-   ```bash
-   git clone [https://github.com/MartinPerezDev/shipnow-api-96790.git](https://github.com/MartinPerezDev/shipnow-api-96790.git)
-   cd shipnow-api-96790 
-   ```
-2.   Instalar dependencias:
-   ```bash
-   npm install
-   ```
-3. Configurar las variables de entorno:
-Crea un archivo .env en la raíz del proyecto tomando como guía el archivo .env.example:
+## 🚀 Requisitos Previos
 
-   ```
-   PORT=8080
-MONGODB_URI=tu_cadena_de_conexion_mongodb
+- **Node.js**: v18 o superior
+- **Docker** y **Docker Compose**
+- **MongoDB**: Instancia local o URI de MongoDB Atlas
+
+---
+
+## ⚙️ Variables de Entorno
+
+Crea un archivo `.env` en la raíz del proyecto basado en la plantilla `.env.example`:
+
+```bash
+cp .env.example .env
+```
+Ejemplo de configuración:
+
+```
+PORT=8080
 NODE_ENV=development
-   ```
-4. Iniciar el servidor en modo desarrollo:
-   ```bash
-   npm run dev
-   ```
-Arquitectura por Capas (Controller - Service - Repository)
-La API fue refactorizada desde un modelo monolítico hacia una arquitectura estructurada en capas:
+MONGODB_URI=mongodb://localhost:27017/shipnow
+LOG_LEVEL=info
+```
 
-Controller (src/controllers/): Gestiona la recepción de solicitudes HTTP (req, res). Delega la lógica de negocio al servicio y devuelve los códigos de estado apropiados. No interactúa directamente con Mongoose.
+🛠️ Instalación y Ejecución Local
+Opción 1: Desarrollo local sin Docker
+Instalar dependencias:
+```
+npm install
+```
+Iniciar en modo desarrollo:
+```
+npm run dev
+```
+Iniciar en modo producción:
+```
+npm start
+```
+Opción 2: Despliegue con Docker 🐳
+Construir la imagen de Docker:
+```
+docker build -t shipnow-api .
+```
+Ejecutar el contenedor:
+```
+docker run -d -p 8080:8080 --env-file .env --name shipnow-container shipnow-api
+```
 
-Service (src/services/): Contiene las reglas de negocio, cálculos y validaciones. Llama a la capa de repositorio para obtener o modificar datos.
+🩺 Monitoreo y Health Check
+La API incluye un endpoint para monitorear el estado del servicio:
 
-Repository (src/repositories/): Es la única capa que conoce Mongoose/MongoDB. Se encarga de realizar consultas, aplicar filtros por defecto y manejar proyecciones.
+GET /api/health
 
-¿Por qué separar Service y Repository?
-Desacoplamiento y Mantenibilidad: La lógica de negocio (Service) queda completamente aislada del mecanismo de almacenamiento (Repository). Si en el futuro se cambia MongoDB/Mongoose por otro ORM o base de datos, las reglas de negocio no sufren modificaciones.
-
-Testabilidad: Facilita la creación de pruebas unitarias sobre los servicios mediante el uso de mocks o datos simulados sin requerir una conexión activa a la base de datos.
-
-## 📌 Pre-entrega 3: Manejo Profesional de Errores
-
-Se implementó un sistema centralizado de gestión de errores mediante una arquitectura por capas.
-
-### Structure of Error Responses
-Todos los errores de la API devuelven una estructura HTTP uniforme:
-
-```json
+Respuesta de ejemplo (200 OK):
 {
-  "status": "error",
-  "error": "InvalidQuantityError",
-  "message": "La cantidad (qty) debe ser un número entero positivo superior a 0.",
-  "code": 4,
-  "cause": "Se recibió qty='-3'. Debe ser un número entero mayor a 0."
+  "status": "OK",
+  "environment": "development",
+  "uptime": "120s",
+  "timestamp": "2026-08-27T15:19:00.000Z"
 }
-```
 
-Casos de prueba para verificar errores controlados
-Cantidad negativa en usuarios simulados (GET):
+⚡ Performance y Paginación
+Paginación: Los endpoints de lectura masiva (como GET /api/orders) implementan paginación mediante page y limit en la URL (?page=1&limit=10).
 
-URL: GET http://localhost:8080/api/mocks/users?qty=-3
-
-Resultado: Status 400 Bad Request con mensaje de error sobre cantidad inválida.
-
-Parámetro no numérico en generación de mocks (GET):
-
-URL: GET http://localhost:8080/api/mocks/users?qty=abc
-
-Resultado: Status 400 Bad Request.
-
-Valores inválidos en el Seed de MongoDB (POST):
-
-URL: POST http://localhost:8080/api/mocks/seed?qty=0
-
-Resultado: Status 400 Bad Request.
-
-
-## 📌 Pre-entrega 4: Logging y Monitoreo Básico
-
-Se integró un sistema de logging profesional basado en Winston con soporte para rotación diaria de archivos vía winston-daily-rotate-file.
-
-Niveles de Log Configurados
-fatal: Fallas críticas que comprometen el funcionamiento de la app (ej. error al conectar MongoDB).
-
-error: Excepciones o errores no controlados del servidor (5xx).
-
-warning: Advertencias y errores esperados del cliente/negocio (4xx).
-
-info: Eventos operacionales (inicio de servidor, conexión a BD).
-
-http: Peticiones HTTP registradas mediante middleware.
-
-debug: Información detallada de tracing para entornos de desarrollo.
-
-Comportamiento según el Entorno (NODE_ENV)
-Desarrollo (development): Muestra por consola desde el nivel debug en adelante, incluyendo timestamps y colores.
-
-Producción (production): Limita la consola a partir del nivel info.
-
-Persistencia y Rotación de Logs
-Los logs con nivel error y fatal se guardan automáticamente en la carpeta /logs en archivos rotativos diarios con el nombre error-YYYY-MM-DD.log (máximo 14 días de retención).
-
-Nota: La carpeta /logs y los archivos *.log están incluidos en .gitignore para evitar su persistencia en el repositorio.
-
-Endpoint Interno de Prueba
-URL: GET http://localhost:8080/loggerTest
-
-Descripción: Dispara logs en todos los niveles para verificar la consola y la escritura en archivo.
-
-## 📌 Pre-entrega 5: Documentación de API con Swagger
-
-Se implementó la documentación técnica interactiva de la API utilizando **Swagger UI** y especificaciones **OpenAPI 3.0.1**.
-
-### Acceso a la Documentación
-* **Ruta de Swagger UI:** `http://localhost:8080/api/docs`
-
-### Módulos Documentados y Estructura por Tags
-* **Users:** Endpoints de consulta y gestión de usuarios.
-* **Orders:** Gestión y listado de pedidos.
-* **Stores:** Información sobre sucursales y tiendas.
-* **Mocks:** Generación de usuarios de prueba en memoria (`GET /api/mocks/users`) y sembrado masivo a la BD (`POST /api/mocks/seed`). Incluye documentación detallada de respuestas de error ante cantidades o parámetros no válidos.
-* **Logger:** Endpoint de testing interno (`GET /loggerTest`) para la validación de niveles de logs.
-
-### Schemas Reutilizables Definidos
-La documentación incluye esquemas reutilizables en Swagger UI para:
-* `User`, `Order`, `OrderItem`, `Delivery`
-* `SuccessResponse` (Estructura estándar de éxito)
-* `ErrorResponse` (Estructura estándar de errores)
-
-## 🧪 Pre-entrega 6: Testing Funcional con Mocha, Chai y Supertest
-
-Se implementó una suite de pruebas funcionales automatizadas para validar los módulos y el comportamiento de la API frente a escenarios de éxito y error.
-
-### Herramientas Utilizadas
-* **Mocha:** Framework de ejecución de pruebas.
-* **Chai:** Librería de aserciones (`expect`).
-* **Supertest:** Cliente HTTP para pruebas de integración sobre Express.
-
-### Entorno de Testing
-Las pruebas se ejecutan de manera aislada utilizando una base de datos MongoDB dedicada definida en el archivo `.env.test`:
-```env
-MONGO_URI=mongodb://localhost:27017/shipnow_test
-NODE_ENV=test
-```
-
-## 📁 Pre-entrega 7: Carga de Archivos, Documentos y Comprobantes
-
-Se incorporó la gestión y subida de archivos mediante **Multer**, asociando metadatos a entidades en MongoDB y manteniendo los archivos físicos en almacenamiento local fuera del repositorio git.
-
-### Características e Integración
-* **Subcarpetas Organizadas:** `/uploads/documents` y `/uploads/proofs`.
-* **Metadatos Guardados:** Nombre original, referencia/ruta, tipo MIME, tamaño en bytes y fecha de subida.
-* **Seguridad y Git:** La carpeta `/uploads` está ignorada en `.gitignore`.
-
-### Endpoint de Carga
-* `POST /api/users/:uid/documents`: Permite subir archivos tipo `multipart/form-data` pasando el campo de archivo `document` y la propiedad `docType` (p. ej., DNI o LICENSE).
+Gestión de Archivos: La subida de comprobantes y documentos está limitada a un máximo de 5 MB y restringida a formatos seguros (.jpg, .png, .webp, .pdf).

@@ -11,8 +11,17 @@ const ALLOWED_DOC_TYPES = ["DNI", "LICENSE", "PASSPORT", "TAX_ID", "PROOF_OF_ADD
 export class UserController {
   static async getAll(req, res) {
     try {
-      const users = await userService.getAllUsers();
-      res.json({ status: "success", payload: users });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+
+      const users = await userService.getAllUsers({ page, limit });
+
+      res.json({ 
+        status: "success", 
+        page,
+        limit,
+        payload: users 
+      });
     } catch (error) {
       res.status(500).json({ status: "error", message: error.message });
     }

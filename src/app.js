@@ -12,6 +12,7 @@ import { httpLogger } from './utils/logger.js';
 import { errorHandler } from './errors/error.middleware.js'; 
 import { CustomError } from './errors/custom.error.js';
 import { EErrors } from './errors/enum.js';
+import healthRouter from './routes/health.router.js';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/api/stores", storesRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/mocks", mocksRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use('/api', healthRouter);
 
 app.use((req, res, next) => {
   CustomError.createError({

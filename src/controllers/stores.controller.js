@@ -5,8 +5,10 @@ const storeService = new StoreService();
 export class StoreController {
   static async getAll(req, res) {
     try {
-      const stores = await storeService.getAllStores();
-      res.json({ status: "success", payload: stores });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const stores = await storeService.getAllStores({ page, limit });
+      res.json({ status: "success", page, limit, payload: stores });
     } catch (error) {
       res.status(500).json({ status: "error", message: error.message });
     }
