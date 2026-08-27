@@ -140,3 +140,15 @@ Las pruebas se ejecutan de manera aislada utilizando una base de datos MongoDB d
 ```env
 MONGO_URI=mongodb://localhost:27017/shipnow_test
 NODE_ENV=test
+
+## 📁 Pre-entrega 7: Carga de Archivos, Documentos y Comprobantes
+
+Se incorporó la gestión y subida de archivos mediante **Multer**, asociando metadatos a entidades en MongoDB y manteniendo los archivos físicos en almacenamiento local fuera del repositorio git.
+
+### Características e Integración
+* **Subcarpetas Organizadas:** `/uploads/documents` y `/uploads/proofs`.
+* **Metadatos Guardados:** Nombre original, referencia/ruta, tipo MIME, tamaño en bytes y fecha de subida.
+* **Seguridad y Git:** La carpeta `/uploads` está ignorada en `.gitignore`.
+
+### Endpoint de Carga
+* `POST /api/users/:uid/documents`: Permite subir archivos tipo `multipart/form-data` pasando el campo de archivo `document` y la propiedad `docType` (p. ej., DNI o LICENSE).

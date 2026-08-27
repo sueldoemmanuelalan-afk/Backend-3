@@ -9,7 +9,7 @@ import ordersRouter from "./routes/orders.router.js";
 import mocksRouter from './routes/mocks.router.js';
 import loggerRouter from './routes/logger.router.js';
 import { httpLogger } from './utils/logger.js';
-import { errorHandler } from './errors/error.middleware.js'; // <--- ASEGÚRATE DE TENER ESTA LÍNEA
+import { errorHandler } from './errors/error.middleware.js'; 
 import { CustomError } from './errors/custom.error.js';
 import { EErrors } from './errors/enum.js';
 

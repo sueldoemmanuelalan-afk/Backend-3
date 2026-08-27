@@ -24,10 +24,16 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "customer", "store"],
       default: "customer"
     },
-    documents: {
-      type: Array,
-      default: []
-    }
+    documents: [
+     {
+       name: { type: String, required: true },
+       reference: { type: String, required: true }, 
+       docType: { type: String, required: true },   
+       mimeType: { type: String },
+       size: { type: Number },
+       uploadedAt: { type: Date, default: Date.now }
+     }
+   ]
   },
   {
     timestamps: true,

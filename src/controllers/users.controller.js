@@ -1,4 +1,7 @@
 import { UserService } from "../services/users.service.js";
+import { logger } from "../utils/logger.js";
+import { CustomError } from "../errors/custom.error.js";
+import { EErrors } from "../errors/enum.js";
 
 const userService = new UserService();
 
@@ -45,6 +48,76 @@ export class UserController {
       res.json({ status: "success", payload: user });
     } catch (error) {
       res.status(400).json({ status: "error", message: error.message });
+    }
+  }
+
+  static async uploadDocuments(req, res, next) {
+    try {
+      const { uid } = req.params;
+      const { docType } = req.body;
+
+      if (!req.file) {
+        throw CustomError.createError({
+          name: "MissingFileError",
+          cause: "No se ha adjuntado ningún archivo.",
+          message: "El archivo es requerido para esta operación.",
+          code: EErrors.INVALID_TYPES,
+          statusCode: 400
+        });
+      }
+
+      if (!docType) {
+        throw CustomError.createError({
+          name: "MissingDocTypeError",
+          cause: "Campo docType no especificado.",
+          message: "Debe especificar el tipo de documento (ej. DNI, LICENSE).",
+          code: EErrors.INVALID_TYPES,
+          statusCode: 400
+        });
+      }
+
+      let user = null;
+      try {
+        user = await userService.getUserById(uid);
+      } catch (err) {
+        user = null;
+      }
+
+      if (!user) {
+        throw CustomError.createError({
+          name: "NotFoundError",
+          cause: `No se encontró usuario con el ID ${uid}`,
+          message: "Usuario no encontrado.",
+          code: EErrors.RESOURCE_NOT_FOUND,
+          statusCode: 404
+        });
+      }
+
+      const documentMeta = {
+        name: req.file.originalname,
+        reference: req.file.path,
+        docType,
+        mimeType: req.file.mimetype,
+        size: req.file.size,
+        uploadedAt: new Date()
+      };
+
+      if (!user.documents) {
+        user.documents = [];
+      }
+
+      user.documents.push(documentMeta);
+      await userService.updateUser(uid, { documents: user.documents });
+
+      logger.info(`Documento '${docType}' cargado exitosamente para el usuario ${uid}`);
+
+      res.status(200).json({
+        status: "success",
+        message: "Documento subido y asociado correctamente",
+        payload: documentMeta
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

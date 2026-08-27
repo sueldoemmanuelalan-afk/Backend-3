@@ -2,7 +2,6 @@ import { fakerES as faker } from '@faker-js/faker';
 import { ORDER_STATUS, ORDER_PRIORITY } from '../constants/index.js';
 
 export const generateMockOrder = (customerId, storeId) => {
-  // Aseguramos valores válidos en mayúsculas para coincidir con el schema de Mongoose
   const fallbackStatuses = ['PENDING', 'IN_TRANSIT', 'DELIVERED', 'ASSIGNED', 'CANCELLED'];
   const fallbackPriorities = ['LOW', 'NORMAL', 'HIGH'];
 

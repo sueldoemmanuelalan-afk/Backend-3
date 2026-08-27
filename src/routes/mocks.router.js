@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/users', MocksController.getUsers);
 router.post('/seed', MocksController.seedData);
-router.get('/generateData', MocksController.seedData); // Soporte alternativo
+router.get('/generateData', MocksController.seedData); 
 
 export default router;

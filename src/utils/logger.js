@@ -2,7 +2,6 @@ import winston from 'winston';
 import 'winston-daily-rotate-file';
 import path from 'path';
 
-// 1. Niveles y colores personalizados requeridos
 const customLevels = {
   levels: {
     fatal: 0,
@@ -24,7 +23,6 @@ const customLevels = {
 
 winston.addColors(customLevels.colors);
 
-// 2. Formato de consola con fecha y colores
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.colorize({ all: true }),
@@ -33,7 +31,6 @@ const consoleFormat = winston.format.combine(
   )
 );
 
-// 3. Formato para archivos (sin colores ANSI)
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.printf(
@@ -41,7 +38,6 @@ const fileFormat = winston.format.combine(
   )
 );
 
-// 4. Rotación diaria de archivos para errores (error y fatal)
 const errorRotateTransport = new winston.transports.DailyRotateFile({
   filename: path.join('logs', 'error-%DATE%.log'),
   datePattern: 'YYYY-MM-DD',
@@ -52,7 +48,6 @@ const errorRotateTransport = new winston.transports.DailyRotateFile({
   format: fileFormat
 });
 
-// 5. Configuración según el entorno
 const environment = process.env.NODE_ENV || 'development';
 
 export const logger = winston.createLogger({
@@ -66,7 +61,6 @@ export const logger = winston.createLogger({
   ]
 });
 
-// Middleware HTTP para Express
 export const httpLogger = (req, res, next) => {
   logger.http(`${req.method} ${req.url}`);
   next();
