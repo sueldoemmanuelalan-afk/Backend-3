@@ -1,10 +1,14 @@
 import { EErrors } from './enum.js';
+import { logger } from '../utils/logger.js';
 
 export const errorHandler = (error, req, res, next) => {
-  console.error(`[ERROR HANDLER]: ${error.name} - ${error.message}`);
-  if (error.cause) console.error(`[CAUSE]: ${error.cause}`);
-
   const statusCode = error.statusCode || 500;
+
+  if (statusCode >= 400 && statusCode < 500) {
+    logger.warning(`[${error.name || 'ClientError'}]: ${error.message} - Path: ${req.originalUrl}`);
+  } else {
+    logger.error(`[${error.name || 'ServerError'}]: ${error.message} - Cause: ${error.cause || 'No cause specified'}`);
+  }
 
   res.status(statusCode).json({
     status: 'error',
