@@ -125,3 +125,18 @@ La documentación incluye esquemas reutilizables en Swagger UI para:
 * `User`, `Order`, `OrderItem`, `Delivery`
 * `SuccessResponse` (Estructura estándar de éxito)
 * `ErrorResponse` (Estructura estándar de errores)
+
+## 🧪 Pre-entrega 6: Testing Funcional con Mocha, Chai y Supertest
+
+Se implementó una suite de pruebas funcionales automatizadas para validar los módulos y el comportamiento de la API frente a escenarios de éxito y error.
+
+### Herramientas Utilizadas
+* **Mocha:** Framework de ejecución de pruebas.
+* **Chai:** Librería de aserciones (`expect`).
+* **Supertest:** Cliente HTTP para pruebas de integración sobre Express.
+
+### Entorno de Testing
+Las pruebas se ejecutan de manera aislada utilizando una base de datos MongoDB dedicada definida en el archivo `.env.test`:
+```env
+MONGO_URI=mongodb://localhost:27017/shipnow_test
+NODE_ENV=test
