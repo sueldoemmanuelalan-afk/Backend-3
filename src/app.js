@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import productsRouter from './routes/products.router.js';
 import usersRouter from "./routes/users.router.js";
 import storesRouter from "./routes/stores.router.js";
 import ordersRouter from "./routes/orders.router.js";
@@ -23,6 +24,7 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use("/api/products", productsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/stores", storesRouter);
 app.use("/api/orders", ordersRouter);
