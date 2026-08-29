@@ -7,8 +7,12 @@ const userRepository = new UserRepository();
 const storeRepository = new StoreRepository();
 
 export class OrderService {
-  async getAllOrders() {
-    return await orderRepository.findAll();
+  async getAllOrders({ page = 1, limit = 10 } = {}) {
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
+    
+    // Le pasamos las opciones de paginación al repositorio
+    return await orderRepository.findAll({ page: parsedPage, limit: parsedLimit });
   }
 
   async getOrderById(id) {

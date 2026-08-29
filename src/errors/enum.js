@@ -1,0 +1,7 @@
+export const EErrors = Object.freeze({
+  INVALID_TYPES_ERROR: 1,
+  RESOURCE_NOT_FOUND: 2,
+  DATABASE_ERROR: 3,
+  INVALID_PARAM_ERROR: 4,
+  INTERNAL_SERVER_ERROR: 5
+});

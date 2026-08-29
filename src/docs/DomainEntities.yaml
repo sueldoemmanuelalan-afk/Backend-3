@@ -1,0 +1,51 @@
+paths:
+  /api/users:
+    get:
+      summary: Obtener listado de usuarios
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Listado de usuarios registrado en el sistema.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+  /api/orders:
+    get:
+      summary: Obtener listado de pedidos
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: Listado de pedidos devueltos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+
+  /api/stores:
+    get:
+      summary: Obtener listado de tiendas / sucursales
+      tags:
+        - Stores
+      responses:
+        '200':
+          description: Listado de tiendas devuelto exitosamente.

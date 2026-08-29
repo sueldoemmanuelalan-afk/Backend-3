@@ -1,9 +1,15 @@
 import OrderModel from "../models/order.model.js";
 
 export class OrderRepository {
-  async findAll() {
-    return await OrderModel.find().populate("customer").populate("store");
-  }
+  async findAll({ page = 1, limit = 10 } = {}) {
+    const skip = (page - 1) * limit;
+
+    return await OrderModel.find()
+      .populate('customer')
+      .populate('store')
+      .skip(skip)
+      .limit(limit);
+   }
 
   async findById(id) {
     return await OrderModel.findById(id).populate("customer").populate("store");

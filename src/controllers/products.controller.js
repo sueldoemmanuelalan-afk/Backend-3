@@ -5,8 +5,10 @@ const productService = new ProductService();
 export class ProductController {
   static async getAll(req, res) {
     try {
-      const products = await productService.getAllProducts();
-      res.status(200).json({ status: 'success', payload: products });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const products = await productService.getAllProducts({ page, limit });
+      res.status(200).json({ status: 'success', page, limit, payload: products });
     } catch (error) {
       res.status(500).json({ status: 'error', message: error.message });
     }

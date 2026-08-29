@@ -1,0 +1,34 @@
+paths:
+  /api/orders/{oid}/proof:
+    post:
+      summary: Subir comprobante de entrega para un pedido
+      description: Carga un comprobante de entrega (imagen o PDF) y lo asocia al pedido indicado.
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: oid
+          required: true
+          schema:
+            type: string
+          description: ID único de la orden en MongoDB
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - proof
+              properties:
+                proof:
+                  type: string
+                  format: binary
+                  description: Archivo del comprobante de entrega (JPG, PNG, WEBP, PDF - máx 5MB).
+      responses:
+        "200":
+          description: Comprobante subido y asociado correctamente al pedido.
+        "400":
+          description: Archivo de comprobante faltante o formato no permitido.
+        "404":
+          description: Orden no encontrada.
