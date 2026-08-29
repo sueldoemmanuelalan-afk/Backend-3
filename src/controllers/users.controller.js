@@ -4,8 +4,6 @@ import { CustomError } from "../errors/custom.error.js";
 import { EErrors } from "../errors/enum.js";
 
 const userService = new UserService();
-
-// Tipos de documento permitidos para la entidad usuario
 const ALLOWED_DOC_TYPES = ["DNI", "LICENSE", "PASSPORT", "TAX_ID", "PROOF_OF_ADDRESS"];
 
 export class UserController {

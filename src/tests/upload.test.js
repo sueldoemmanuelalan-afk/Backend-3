@@ -64,8 +64,6 @@ describe('Suite de Tests Funcionales - Carga de Archivos (Multer)', () => {
     }
   });
 
-  // --- TESTS DE DOCUMENTOS DE USUARIO ---
-
   it('POST /api/users/:uid/documents - Debe subir un documento correctamente', async () => {
     const response = await request(app)
       .post(`/api/users/${testUser._id}/documents`)
@@ -107,7 +105,6 @@ describe('Suite de Tests Funcionales - Carga de Archivos (Multer)', () => {
     expect(response.body).to.have.property('status', 'error');
   });
 
-  // --- TESTS DE COMPROBANTES DE PEDIDOS/ENTREGAS ---
 
   it('POST /api/orders/:oid/proof - Debe subir un comprobante de entrega correctamente', async () => {
     const response = await request(app)

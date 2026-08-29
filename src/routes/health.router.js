@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { config } from '../config/env.config.js'; // Ajusta la ruta a tu env.config si es necesario
+import { config } from '../config/env.config.js';
 
 const router = Router();
 

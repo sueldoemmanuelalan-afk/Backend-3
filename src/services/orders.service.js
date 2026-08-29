@@ -11,7 +11,6 @@ export class OrderService {
     const parsedPage = Math.max(1, parseInt(page, 10) || 1);
     const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
     
-    // Le pasamos las opciones de paginación al repositorio
     return await orderRepository.findAll({ page: parsedPage, limit: parsedLimit });
   }
 
