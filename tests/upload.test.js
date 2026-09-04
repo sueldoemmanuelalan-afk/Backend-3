@@ -3,17 +3,17 @@ import { expect } from 'chai';
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
-import app from '../app.js';
-import userModel from '../models/user.model.js';
-import orderModel from '../models/order.model.js';
-import storeModel from '../models/store.model.js';
+import app from '../src/app.js'; 
+import userModel from '../src/models/user.model.js';
+import orderModel from '../src/models/order.model.js';
+import storeModel from '../src/models/store.model.js';
 
 describe('Suite de Tests Funcionales - Carga de Archivos (Multer)', () => {
 
   let testUser;
   let testStore;
   let testOrder;
-  const dummyFilePath = path.join(process.cwd(), 'src/tests/dummy.pdf');
+  const dummyFilePath = path.join(process.cwd(), 'tests/dummy.pdf');
 
   before(async () => {
     const testMongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/shipnow_test';

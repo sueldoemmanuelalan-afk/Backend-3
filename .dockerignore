@@ -1,12 +1,12 @@
 node_modules
 .env
-.env.local
-.git
-.github
 logs
+.env.test
+.env.production
+.git
+.gitignore
 uploads
 coverage
-.gitignore
-README.md
+npm-debug.log
 Dockerfile
 .dockerignore

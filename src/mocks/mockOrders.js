@@ -1,8 +1,9 @@
 import { fakerES as faker } from '@faker-js/faker';
+import { ORDER_STATUS, ORDER_PRIORITY } from '../constants/index.js';
 
 export const generateMockOrder = (customerId, storeId) => {
-  const statuses = ["created", "assigned", "picked_up", "in_transit", "delivered", "cancelled"];
-  const priorities = ["low", "normal", "high"];
+  const statuses = Object.values(ORDER_STATUS);
+  const priorities = Object.values(ORDER_PRIORITY);
 
   const itemsCount = faker.number.int({ min: 1, max: 4 });
   const items = Array.from({ length: itemsCount }, () => ({

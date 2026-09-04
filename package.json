@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "mocha src/tests/**/*.test.js --timeout 10000 --exit"
+    "test": "npx mocha tests/**/*.test.js --timeout 10000 --exit",
+    "test:coverage": "c8 mocha tests/**/*.test.js --timeout 10000 --exit"
   },
   "dependencies": {
     "@faker-js/faker": "^10.6.0",
@@ -22,8 +23,9 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "c8": "^12.0.0",
     "chai": "^6.2.2",
-    "mocha": "^11.8.0",
+    "mocha": "^12.0.0",
     "nodemon": "^3.1.9",
     "supertest": "^7.2.2"
   }

@@ -1,8 +1,27 @@
 import UserModel from "../models/user.model.js";
 
 export class UserRepository {
-  async findAll() {
-    return await UserModel.find();
+  async findAll({ page = 1, limit = 10 } = {}) {
+    const skip = (page - 1) * limit;
+
+    const [docs, totalDocs] = await Promise.all([
+      UserModel.find()
+        .skip(skip)
+        .limit(limit),
+      UserModel.countDocuments()
+    ]);
+
+    const totalPages = Math.ceil(totalDocs / limit) || 1;
+
+    return {
+      docs,
+      totalDocs,
+      totalPages,
+      page,
+      limit,
+      hasPrevPage: page > 1,
+      hasNextPage: page < totalPages
+    };
   }
 
   async findById(id) {

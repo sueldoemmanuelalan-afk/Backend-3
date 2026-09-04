@@ -2,7 +2,7 @@ export const ROLES = Object.freeze({
   ADMIN: 'admin',
   CUSTOMER: 'customer',
   STORE: 'store',
-  DRIVER: 'customer'
+  DRIVER: 'driver'
 });
 
 export const PRODUCT_STATUS = Object.freeze({

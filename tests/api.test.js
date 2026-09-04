@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import mongoose from 'mongoose';
-import app from '../app.js';
+import app from '../src/app.js';
 
 describe('Suite de Tests Funcionales - ShipNow API', () => {
 

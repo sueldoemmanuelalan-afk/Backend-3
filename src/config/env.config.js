@@ -1,17 +1,21 @@
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
 
-const requiredVars = ['PORT', 'MONGODB_URI', 'NODE_ENV'];
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
-for (const envVar of requiredVars) {
-  if (!process.env[envVar]) {
-    throw new Error(`[Config Error]: La variable de entorno ${envVar} es obligatoria.`);
-  }
+if (!mongoUri) {
+  throw new Error('[Config Error]: La variable de entorno MONGODB_URI es obligatoria.');
+}
+
+if (!process.env.PORT) {
+  throw new Error('[Config Error]: La variable de entorno PORT es obligatoria.');
 }
 
 export const config = {
   port: process.env.PORT || 8080,
-  mongoUri: process.env.MONGODB_URI,
+  mongoUri: mongoUri,
   env: process.env.NODE_ENV || 'development'
 };

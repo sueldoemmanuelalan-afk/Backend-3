@@ -12,9 +12,8 @@ const userRepository = new UserRepository();
 const orderRepository = new OrderRepository();
 
 export class MocksService {
-  static getUsers(qty) {
+  static validateQuantity(qty) {
     const parsedQty = Number(qty);
-
     if (isNaN(parsedQty) || parsedQty <= 0) {
       CustomError.createError({
         name: 'InvalidQuantityError',
@@ -24,45 +23,61 @@ export class MocksService {
         statusCode: 400
       });
     }
+    return parsedQty;
+  }
 
+  static getUsers(qty) {
+    const parsedQty = this.validateQuantity(qty);
     return generateMockUsers(parsedQty);
   }
 
-  static async seedData(usersQty = 5, ordersQty = 5) {
-    const parsedUsersQty = Number(usersQty);
-    const parsedOrdersQty = Number(ordersQty);
+  static getOrders(qty) {
+    const parsedQty = this.validateQuantity(qty);
+    return Array.from({ length: parsedQty }, () =>
+      generateMockOrder('dummyCustomerId', 'dummyStoreId')
+    );
+  }
 
-    if (isNaN(parsedUsersQty) || parsedUsersQty <= 0 || isNaN(parsedOrdersQty) || parsedOrdersQty <= 0) {
-      CustomError.createError({
-        name: 'InvalidQuantityError',
-        cause: `Valores recibidos: usersQty=${usersQty}, ordersQty=${ordersQty}.`,
-        message: 'Las cantidades a poblar deben ser números enteros mayores a 0.',
-        code: EErrors.INVALID_PARAM_ERROR,
-        statusCode: 400
-      });
-    }
+  static getDeliveries(qty) {
+    const parsedQty = this.validateQuantity(qty);
+    return Array.from({ length: parsedQty }, () =>
+      generateMockDelivery('dummyOrderId', 'dummyDriverId')
+    );
+  }
+
+  static async seedData(usersQty = 5, ordersQty = 5) {
+    const parsedUsersQty = this.validateQuantity(usersQty);
+    const parsedOrdersQty = this.validateQuantity(ordersQty);
 
     try {
+      // 1. Generar usuarios con sus roles correctos usando las constantes
       const mockCustomers = generateMockUsers(parsedUsersQty, ROLES.CUSTOMER);
-      const mockDrivers = generateMockUsers(2, ROLES.CUSTOMER);
+      const mockDrivers = generateMockUsers(2, ROLES.DRIVER);
+      const mockStores = generateMockUsers(1, ROLES.STORE);
 
+      // 2. Persistir usuarios en MongoDB
       const createdCustomers = await Promise.all(
         mockCustomers.map(u => userRepository.create(u))
       );
       const createdDrivers = await Promise.all(
         mockDrivers.map(u => userRepository.create(u))
       );
+      const createdStores = await Promise.all(
+        mockStores.map(u => userRepository.create(u))
+      );
 
-      const dummyStoreId = '6a8fbbd825c82c17e064ea92';
+      const activeStore = createdStores[0];
 
+      // 3. Crear pedidos vinculados a clientes y tiendas reales de la BD
       const createdOrders = [];
       for (let i = 0; i < parsedOrdersQty; i++) {
         const randomCustomer = createdCustomers[Math.floor(Math.random() * createdCustomers.length)];
-        const orderPayload = generateMockOrder(randomCustomer._id, dummyStoreId);
+        const orderPayload = generateMockOrder(randomCustomer._id, activeStore._id);
         const order = await orderRepository.create(orderPayload);
         createdOrders.push(order);
       }
 
+      // 4. Crear entregas vinculadas a pedidos y repartidores reales
       const createdDeliveries = [];
       for (const order of createdOrders) {
         const randomDriver = createdDrivers[Math.floor(Math.random() * createdDrivers.length)];
@@ -72,7 +87,7 @@ export class MocksService {
       }
 
       return {
-        usersInserted: createdCustomers.length + createdDrivers.length,
+        usersInserted: createdCustomers.length + createdDrivers.length + createdStores.length,
         ordersInserted: createdOrders.length,
         deliveriesInserted: createdDeliveries.length
       };

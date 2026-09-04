@@ -46,8 +46,8 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["created", "assigned", "picked_up", "in_transit", "delivered", "cancelled"],
-      default: "created"
+      enum: ["pending", "created", "assigned", "picked_up", "in_transit", "delivered", "cancelled"],
+      default: "pending"
     },
     priority: {
       type: String,

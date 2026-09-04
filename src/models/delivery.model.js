@@ -5,8 +5,8 @@ const deliverySchema = new Schema({
   driver: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   status: { 
     type: String, 
-    enum: ['assigned', 'in_transit', 'delivered', 'failed'], 
-    default: 'assigned' 
+    enum: ['pending', 'assigned', 'in_transit', 'delivered', 'failed', 'cancelled'], 
+    default: 'pending' 
   },
   notes: { type: String, default: '' }
 }, { timestamps: true });

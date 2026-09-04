@@ -6,7 +6,7 @@ paths:
       tags:
         - Logger
       responses:
-        '200':
+        "200":
           description: Logs registrados correctamente en la consola y archivos de salida.
           content:
             application/json:
@@ -19,3 +19,9 @@ paths:
                   message:
                     type: string
                     example: Logs generados exitosamente. Revisa la consola y la carpeta /logs.
+        "500":
+          description: Error al generar logs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

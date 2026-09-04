@@ -13,7 +13,7 @@ paths:
             default: 5
           description: Cantidad de usuarios a generar. Debe ser un número mayor a 0.
       responses:
-        '200':
+        "200":
           description: Lista de usuarios simulados generada con éxito.
           content:
             application/json:
@@ -27,8 +27,78 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/User'
-        '400':
-          description: Cantidad no válida o negativa enviada.
+        "400":
+          description: Cantidad no válida enviada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/mocks/orders:
+    get:
+      summary: Generar pedidos simulados en memoria
+      description: Devuelve una lista de pedidos falsos generados dinámicamente con Faker.js.
+      tags:
+        - Mocks
+      parameters:
+        - in: query
+          name: qty
+          schema:
+            type: integer
+            default: 5
+          description: Cantidad de pedidos a generar.
+      responses:
+        "200":
+          description: Lista de pedidos simulados generada con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        "400":
+          description: Cantidad no válida enviada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/mocks/deliveries:
+    get:
+      summary: Generar entregas simuladas en memoria
+      description: Devuelve una lista de entregas falsas generadas dinámicamente.
+      tags:
+        - Mocks
+      parameters:
+        - in: query
+          name: qty
+          schema:
+            type: integer
+            default: 5
+          description: Cantidad de entregas a generar.
+      responses:
+        "200":
+          description: Lista de entregas simuladas generada con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Delivery'
+        "400":
+          description: Cantidad no válida enviada.
           content:
             application/json:
               schema:
@@ -48,7 +118,7 @@ paths:
             default: 5
           description: Cantidad de datos de prueba a generar por entidad.
       responses:
-        '201':
+        "201":
           description: Base de datos poblada exitosamente.
           content:
             application/json:
@@ -73,7 +143,7 @@ paths:
                       deliveriesInserted:
                         type: integer
                         example: 5
-        '400':
+        "400":
           description: Cantidad o parámetros de entrada inválidos.
           content:
             application/json:

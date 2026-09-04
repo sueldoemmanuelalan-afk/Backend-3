@@ -1,7 +1,20 @@
 node_modules
 .env
 logs/
-uploads/
-coverage
-npm-debug.log
 *.log
+.DS_Store
+
+# Testing
+.env.test
+coverage/
+
+uploads/*
+!uploads/.gitkeep
+!uploads/documents/
+!uploads/documents/.gitkeep
+!uploads/proofs/
+!uploads/proofs/.gitkeep
+!uploads/licenses/
+!uploads/licenses/.gitkeep
+
+.env.production

@@ -7,57 +7,63 @@ const userService = new UserService();
 const ALLOWED_DOC_TYPES = ["DNI", "LICENSE", "PASSPORT", "TAX_ID", "PROOF_OF_ADDRESS"];
 
 export class UserController {
-  static async getAll(req, res) {
+  static async getAll(req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
 
-      const users = await userService.getAllUsers({ page, limit });
+      const result = await userService.getAllUsers({ page, limit });
 
-      res.json({ 
+      const docs = result.docs || result;
+      const totalRecords = result.totalDocs || (Array.isArray(result) ? result.length : 0);
+      const totalPages = result.totalPages || Math.ceil(totalRecords / limit) || 1;
+
+      res.status(200).json({ 
         status: "success", 
+        payload: docs,
+        totalRecords,
+        totalPages,
         page,
-        limit,
-        payload: users 
+        limit
       });
     } catch (error) {
-      res.status(500).json({ status: "error", message: error.message });
+      next(error);
     }
   }
 
-  static async getById(req, res) {
+  static async getById(req, res, next) {
     try {
       const user = await userService.getUserById(req.params.uid);
-      res.json({ status: "success", payload: user });
+      res.status(200).json({ status: "success", payload: user });
     } catch (error) {
-      res.status(400).json({ status: "error", message: error.message });
+      next(error);
     }
   }
 
-  static async create(req, res) {
+  static async create(req, res, next) {
     try {
       const user = await userService.createUser(req.body);
       res.status(201).json({ status: "success", payload: user });
     } catch (error) {
-      res.status(400).json({ status: "error", message: error.message });
+      next(error);
     }
   }
 
-  static async update(req, res) {
+  static async update(req, res, next) {
     try {
       const user = await userService.updateUser(req.params.uid, req.body);
-      res.json({ status: "success", payload: user });
+      res.status(200).json({ status: "success", payload: user });
     } catch (error) {
-      res.status(400).json({ status: "error", message: error.message });
+      next(error);
     }
   }
 
-  static async delete(req, res) {
+  static async delete(req, res, next) {
     try {
       const user = await userService.deleteUser(req.params.uid);
-      res.json({ status: "success", payload: user });
+      res.status(200).json({ status: "success", payload: user });
     } catch (error) {
-      res.status(400).json({ status: "error", message: error.message });
+      next(error);
     }
   }
 
@@ -67,49 +73,32 @@ export class UserController {
       const { docType } = req.body;
 
       if (!req.file) {
-        throw CustomError.createError({
+        CustomError.createError({
           name: "MissingFileError",
           cause: "No se ha adjuntado ningún archivo.",
           message: "El archivo es requerido para esta operación.",
-          code: EErrors.INVALID_TYPES,
+          code: EErrors.INVALID_TYPES_ERROR,
           statusCode: 400
         });
       }
 
       if (!docType) {
-        throw CustomError.createError({
+        CustomError.createError({
           name: "MissingDocTypeError",
           cause: "Campo docType no especificado.",
           message: "Debe especificar el tipo de documento (ej. DNI, LICENSE, PASSPORT, TAX_ID, PROOF_OF_ADDRESS).",
-          code: EErrors.INVALID_TYPES,
+          code: EErrors.INVALID_TYPES_ERROR,
           statusCode: 400
         });
       }
 
       if (!ALLOWED_DOC_TYPES.includes(docType)) {
-        throw CustomError.createError({
+        CustomError.createError({
           name: "InvalidDocTypeError",
           cause: `El tipo de documento '${docType}' no es válido.`,
           message: `Tipo de documento no permitido. Tipos válidos: ${ALLOWED_DOC_TYPES.join(", ")}`,
-          code: EErrors.INVALID_TYPES,
+          code: EErrors.INVALID_TYPES_ERROR,
           statusCode: 400
-        });
-      }
-
-      let user = null;
-      try {
-        user = await userService.getUserById(uid);
-      } catch (err) {
-        user = null;
-      }
-
-      if (!user) {
-        throw CustomError.createError({
-          name: "NotFoundError",
-          cause: `No se encontró usuario con el ID ${uid}`,
-          message: "Usuario no encontrado.",
-          code: EErrors.RESOURCE_NOT_FOUND,
-          statusCode: 404
         });
       }
 
@@ -123,12 +112,7 @@ export class UserController {
         uploadedAt: new Date()
       };
 
-      if (!user.documents) {
-        user.documents = [];
-      }
-
-      user.documents.push(documentMeta);
-      await userService.updateUser(uid, { documents: user.documents });
+      await userService.addDocument(uid, documentMeta);
 
       logger.info(`Documento '${docType}' cargado exitosamente para el usuario ${uid}`);
 

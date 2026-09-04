@@ -38,7 +38,7 @@ const fileFilter = (req, file, cb) => {
         name: 'InvalidFileTypeError',
         cause: `El formato de archivo ${file.mimetype} no está permitido.`,
         message: 'Tipo de archivo no permitido. Solo se aceptan JPG, PNG, WEBP y PDF.',
-        code: EErrors.INVALID_TYPES,
+        code: EErrors.INVALID_TYPES_ERROR,
         statusCode: 400
       }),
       false
